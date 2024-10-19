@@ -1,0 +1,28 @@
+<form [formGroup]="registerForm" (ngSubmit)="register()">
+    <div>
+        <label for="username"><b>Username: </b></label>
+        <input type="text" formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <span *ngIf="!registerForm.get('username')?.valid && registerForm.get('username')?.touched">
+            Please provide a valid username
+        </span>   
+    </div>
+    <div>
+        <label for="email"><b>Email: </b></label>
+        <input type="text" formControlName="email" placeholder="Enter Email" name="email" id="email" required>
+        <span *ngIf="!registerForm.get('email')?.valid && registerForm.get('email')?.touched">
+            Please provide a valid email
+        </span>  
+    </div>
+    <div>
+        <label for="psw"><b>Password: </b></label>
+        <input type="password" formControlName="password" placeholder="Enter Password" name="psw" id="psw" required>
+        <span *ngIf="!registerForm.get('password')?.valid && registerForm.get('password')?.touched">
+            Please provide a valid password
+        </span>  
+
+        <span>{{message}}</span>
+    </div>
+    <div>
+        <button type="submit" [disabled]="!registerForm.valid">Register</button>
+    </div>
+</form>
