@@ -1,0 +1,20 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+    <div>
+        <label for="username"><b>username</b></label>
+        <input type="text" formControlName="username" placeholder="Enter Username" name="username" id="username" required>
+        <span *ngIf="!loginForm.get('username')?.valid && loginForm.get('username')?.touched" >
+            Please provide a valid username
+        </span>
+    </div>
+    <div>
+        <label for="psw"><b>Password</b></label>
+        <input type="password" formControlName="password" placeholder="Enter Password" name="psw" id="psw" required>    
+        <span *ngIf="!loginForm.get('password')?.valid && loginForm.get('password')?.touched">
+            Please provide a valid password
+        </span>
+        <span>{{message}}</span>
+    </div>
+    <div>
+        <button type="submit" [disabled]="!loginForm.valid">Login</button>
+    </div>
+</form>
