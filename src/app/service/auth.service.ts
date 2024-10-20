@@ -18,17 +18,19 @@ export class AuthService {
     return this.httpClient.post("http://localhost:8080/api/register", registerDTO, {responseType: 'json'})
     .pipe(
       catchError(error => {
-        //Todo: add notification
-        return of(null);
+        return of({ status: 'error', message: 'Username or email already taken' });
       })
     );
   }
 
   login(loginDTO: LoginDTO):Observable<boolean> {
-    return this.httpClient.post<string>("http://localhost:8080/api/login", loginDTO)
-      .pipe(map(data => {
-        localStorage.setItem("token",data);
-        return true;
+    return this.httpClient.post<{status: string, token: string, timestamp: string}>("http://localhost:8080/api/login", loginDTO)
+      .pipe(map(response => {
+        if (response.status === 'ok' && response.token) {
+          localStorage.setItem("token", response.token);
+          return true;
+        }
+        return false;
       }),
       catchError(error => {
         this.loggedIn.emit(false);
