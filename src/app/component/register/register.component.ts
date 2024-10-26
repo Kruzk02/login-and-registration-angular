@@ -40,10 +40,10 @@ export class RegisterComponent implements OnInit {
 
     this.authService.register(this.registerDTO).subscribe(response => {
       if (response.status === 'ok') {
-        this.message = response.message;
+        this.message = 'Success register';
         console.log(response.message);
       } else {
-        this.message = response.message;
+        this.message = "Failed";
         console.error(response.message);
       }
     }, error => {
