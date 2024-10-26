@@ -27,20 +27,19 @@ export class AuthService {
     return this.httpClient.post<{status: string, token: string, timestamp: string}>("http://localhost:8080/api/login", loginDTO)
       .pipe(map(response => {
         if (response.status === 'ok' && response.token) {
-          localStorage.setItem("token", response.token);
+          sessionStorage.setItem("token", response.token);
           return true;
         }
         return false;
       }),
       catchError(error => {
         this.loggedIn.emit(false);
-        //Todo: add notification
         return of(false);
       }))
   }
 
   getJwtToken() {
-    return localStorage.getItem("token");
+    return sessionStorage.getItem("token");
   }
 
   isLoggedIn() {
