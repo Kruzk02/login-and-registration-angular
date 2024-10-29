@@ -1,13 +1,17 @@
 <header>
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
-        <div class="flex flex-warp justify-between items-center mx-auto max-w-screen-xl">
-            <div class="flex items-center">
-                <button routerLink="/">Icon</button>
-            </div>
-            <div class="flex items-center lg:order-2">
-                <button routerLink="/login" class="text-gray-800 dark:text-white hover:bg-gray-200  font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 active:bg-gray-300">Login</button>
-                <button routerLink="/register" class="text-white bg-primary-700 hover:bg-primary-800  font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 active:bg-primary-900">Register</button>
-            </div>
+        <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+        <div class="flex items-center">
+            <button routerLink="/">Icon</button>
+        </div>
+        <div class="flex items-center lg:order-2" *ngIf="!isLoggedIn; else loggedInTemplate">
+            <button routerLink="/login" class="text-gray-800 dark:text-white hover:bg-gray-200 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 active:bg-gray-300">Login</button>
+            <button routerLink="/register" class="text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 active:bg-primary-900">Register</button>
+        </div>
+        <ng-template #loggedInTemplate>
+            <span [ngStyle]="{ color: 'dark' }">{{ username }}</span>
+        </ng-template>
         </div>
     </nav>
 </header>
+  
