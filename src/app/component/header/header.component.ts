@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 
@@ -14,6 +14,7 @@ import { AuthService } from '../../service/auth.service';
 export class HeaderComponent implements OnInit {
   username: string | null = null;
   isLoggedIn: boolean = false;
+  isDropdownOpen = false;
 
   constructor(private authService: AuthService) {}
 
@@ -29,5 +30,23 @@ export class HeaderComponent implements OnInit {
     
     this.username = sessionStorage.getItem("username");
     this.isLoggedIn = !!sessionStorage.getItem("token");
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const dropdown = document.getElementById('dropdown');
+    const targetElement = event.target as HTMLElement;
+
+    if (dropdown && !dropdown.contains(targetElement) && !targetElement.closest('.dropdown-button')) {
+      this.isDropdownOpen = false;
+    }
   }
 }
