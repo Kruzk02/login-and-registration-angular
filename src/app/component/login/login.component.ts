@@ -3,14 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { LoginDTO } from '../../dtos/LoginDTO';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [HttpClientModule, ReactiveFormsModule,RouterLink,CommonModule],
-  providers: [AuthService],
+  imports: [ReactiveFormsModule,RouterLink,CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -36,15 +34,17 @@ export class LoginComponent implements OnInit{
 
     this.loginDTO = this.loginForm.value;
 
-    this.authService.login(this.loginDTO).subscribe(response => {
-      if (response) {
-        this.message = 'Success Login';
-      }else {
-        this.message = 'Failed';
+    this.authService.login(this.loginDTO).subscribe({
+      next: (response) => {
+        if (response) {
+          this.message = 'Success Login';
+        } else {
+          this.message = 'username or password is incorrect';
+        }
+      },
+      error: (err) => {
+        this.message = err?.message;
       }
-    }, error => {
-      console.error('An error occurred while login:', error);
-      this.message = 'An unexpected error occurred. Please try again.';
-    });   
+    })
   }
 }
