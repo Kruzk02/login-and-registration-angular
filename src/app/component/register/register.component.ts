@@ -38,17 +38,17 @@ export class RegisterComponent implements OnInit {
 
     this.registerDTO = this.registerForm.value;
 
-    this.authService.register(this.registerDTO).subscribe(response => {
-      if (response.status === 'ok') {
-        this.message = 'Success register';
-        console.log(response.message);
-      } else {
-        this.message = "Failed";
-        console.error(response.message);
+    this.authService.register(this.registerDTO).subscribe({
+      next: (response) => {
+        if (response.status === 'ok') {
+          this.message = 'Success register';
+        } else {
+          this.message = 'Username or email already taken'
+        }
+      },
+      error: (err) => {
+        this.message = err?.message;
       }
-    }, error => {
-      console.error('An error occurred while registering:', error);
-      this.message = 'An unexpected error occurred. Please try again.';
-    });    
+    });
   }
 }
