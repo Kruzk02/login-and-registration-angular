@@ -23,7 +23,7 @@
                         </span>
                         <div class="text-center">
                             <span 
-                            *ngIf="message == 'Success Login'; else errorTemplate"
+                            *ngIf="message == 'Success Login, redirecting to home page'; else errorTemplate"
                             [ngStyle]="{ color: 'green'}"class="text-center"
                             >{{message}}</span>
                             <ng-template #errorTemplate>

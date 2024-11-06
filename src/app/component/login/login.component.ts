@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { LoginDTO } from '../../dtos/LoginDTO';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   message: string | undefined;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -37,7 +37,10 @@ export class LoginComponent implements OnInit{
     this.authService.login(this.loginDTO).subscribe({
       next: (response) => {
         if (response) {
-          this.message = 'Success Login';
+          this.message = 'Success Login, redirecting to home page';
+          setTimeout(() => {
+            this.router.navigate(['/'])
+          },5000)
         } else {
           this.message = 'username or password is incorrect';
         }

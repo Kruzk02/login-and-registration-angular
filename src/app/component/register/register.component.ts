@@ -41,7 +41,10 @@ export class RegisterComponent implements OnInit {
     this.authService.register(this.registerDTO).subscribe({
       next: (response) => {
         if (response.status === 'ok') {
-          this.message = 'Success register';
+          this.message = 'Success register, redirecting to login page';
+          setTimeout(() => {
+            this.router.navigate(['/login'])
+          },5000)
         } else {
           this.message = 'Username or email already taken'
         }
