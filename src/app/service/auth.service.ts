@@ -3,32 +3,40 @@ import { Injectable, } from '@angular/core';
 import { RegisterDTO } from '../dtos/RegisterDTO';
 import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { LoginDTO } from '../dtos/LoginDTO';
+import { environment } from '../../environments/environment.development';
+import { Route, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private apiUrl = environment.apiUrl;
+
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn = this.loggedInSubject.asObservable();
 
   private usernameSubject = new BehaviorSubject<string | null>(null);
   public username = this.usernameSubject.asObservable();
   
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private router: Router) { }
 
-  register(registerDTO: RegisterDTO):Observable<any> {
-    return this.httpClient.post("http://localhost:8080/api/register", registerDTO, {responseType: 'json'})
+  register(registerDTO: RegisterDTO):Observable<{status: string, message: string}> {
+    return this.httpClient.post<{message: string}>(`${this.apiUrl}/api/register`, registerDTO, {responseType: 'json'})
     .pipe(
-      catchError(error => {
+      map(response => {
+        return { status: 'Success', message: response.message }
+      }),
+      catchError(() => {
         return of({ status: 'error', message: 'Username or email already taken' });
       })
     );
   }
 
   login(loginDTO: LoginDTO):Observable<boolean> {
-    return this.httpClient.post<{status: string, token: string, timestamp: string}>("http://localhost:8080/api/login", loginDTO)
+    return this.httpClient.post<{token: string}>(`${this.apiUrl}/api/login`, loginDTO)
       .pipe(map(response => {
-        if (response.status === 'ok' && response.token) {
+        if (response.token != null) {
           sessionStorage.setItem("token", response.token);
           this.loggedInSubject.next(true)
 
@@ -45,6 +53,27 @@ export class AuthService {
         return of(false);
       }))
   }
+
+  verify(token: string): Observable<{status: string, message: string}> {
+    const jwtToken = this.getJwtToken();
+  
+    if (!jwtToken) {
+      throw new Error("Jwt token shouldn't be empty");
+    }
+  
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+    return this.httpClient.get<{message: string}>(`${this.apiUrl}/api/verify?token=${token}`, { headers })
+      .pipe(
+        map(response => {
+          setInterval(() => this.router.navigateByUrl("/"))
+          return { status: 'success', message: response.message };
+        }),
+        catchError(err => {
+          console.error('Verification error:', err);
+          return of({ status: 'error', message: 'Verification failed.' });
+        })
+      );
+  }  
   
   getUsername(): Observable<string> {
     const token = this.getJwtToken();
@@ -54,7 +83,7 @@ export class AuthService {
     }
     
     const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
-    return this.httpClient.get<{username :string}>("http://localhost:8080/api/get-username", { headers }).pipe(
+    return this.httpClient.get<{username :string}>(`${this.apiUrl}/api/get-username`, { headers }).pipe(
       map(response => response.username),
       catchError(error => {
         console.error("Error fetching username:", error);
