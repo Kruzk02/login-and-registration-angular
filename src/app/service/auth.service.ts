@@ -21,14 +21,25 @@ export class AuthService {
   
   constructor(private httpClient: HttpClient, private router: Router) { }
 
-  register(registerDTO: RegisterDTO):Observable<{status: string, message: string}> {
-    return this.httpClient.post<{message: string}>(`${this.apiUrl}/api/register`, registerDTO, {responseType: 'json'})
+  register(registerDTO: RegisterDTO):Observable<boolean> {
+    return this.httpClient.post<{token: string}>(`${this.apiUrl}/api/register`, registerDTO, {responseType: 'json'})
     .pipe(
       map(response => {
-        return { status: 'Success', message: response.message }
+        if (response.token != null) {
+          sessionStorage.setItem("token", response.token);
+          this.loggedInSubject.next(true)
+
+          this.getUsername().subscribe(username => {
+            sessionStorage.setItem("username",username)
+            this.usernameSubject.next(username)
+          });
+          return true;
+        }
+        return false;
       }),
       catchError(() => {
-        return of({ status: 'error', message: 'Username or email already taken' });
+        this.loggedInSubject.next(false);
+        return of(false);
       })
     );
   }
@@ -54,26 +65,20 @@ export class AuthService {
       }))
   }
 
-  verify(token: string): Observable<{status: string, message: string}> {
-    const jwtToken = this.getJwtToken();
-  
-    if (!jwtToken) {
-      throw new Error("Jwt token shouldn't be empty");
-    }
-  
-    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+  verify(token: string | null): Observable<{status: string, message: string}> {
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${this.getJwtToken()}`);
     return this.httpClient.get<{message: string}>(`${this.apiUrl}/api/verify?token=${token}`, { headers })
       .pipe(
         map(response => {
-          setInterval(() => this.router.navigateByUrl("/"))
+          this.router.navigateByUrl("/");
           return { status: 'success', message: response.message };
         }),
         catchError(err => {
-          console.error('Verification error:', err);
+          this.router.navigateByUrl("/");
           return of({ status: 'error', message: 'Verification failed.' });
         })
       );
-  }  
+  }   
   
   getUsername(): Observable<string> {
     const token = this.getJwtToken();
