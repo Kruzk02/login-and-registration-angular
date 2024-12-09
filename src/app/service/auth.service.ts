@@ -18,7 +18,7 @@ export class AuthService {
 
   private usernameSubject = new BehaviorSubject<string | null>(null);
   public username = this.usernameSubject.asObservable();
-  
+
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   register(registerDTO: RegisterDTO):Observable<boolean> {
@@ -78,15 +78,15 @@ export class AuthService {
           return of({ status: 'error', message: 'Verification failed.' });
         })
       );
-  }   
-  
+  }
+
   getUsername(): Observable<string> {
     const token = this.getJwtToken();
 
     if (!token) {
       return of("");
     }
-    
+
     const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
     return this.httpClient.get<{username :string}>(`${this.apiUrl}/api/get-username`, { headers }).pipe(
       map(response => response.username),
@@ -96,7 +96,17 @@ export class AuthService {
       })
     );
   }
-  
+
+  getUserProfilePicture(): Observable<Blob> | null {
+    const token = this.getJwtToken();
+    if (!token) {
+      return null;
+    }
+
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`)
+    return this.httpClient.get(`${this.apiUrl}/api/profile-picture`, { headers, responseType: 'blob' });
+  }
+
   getJwtToken() {
     return sessionStorage.getItem("token");
   }
