@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header',
@@ -13,10 +14,11 @@ import { AuthService } from '../../service/auth.service';
 
 export class HeaderComponent implements OnInit {
   username: string | null = null;
+  profilePictureUrl: SafeUrl | null = null;
   isLoggedIn: boolean = false;
   isDropdownOpen = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.authService.loggedIn.subscribe(status => {
@@ -27,7 +29,15 @@ export class HeaderComponent implements OnInit {
     });
 
     this.authService.username.subscribe(username => this.username = username);
-    
+    this.authService.getUserProfilePicture()?.subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        this.profilePictureUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+      },
+      error: (error) => {
+        console.log("Failed to fetch profile picture: ", error)
+      }
+    })
     this.username = sessionStorage.getItem("username");
     this.isLoggedIn = !!sessionStorage.getItem("token");
   }

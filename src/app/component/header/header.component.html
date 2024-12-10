@@ -2,25 +2,31 @@
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl relative">
             <div class="flex items-center">
-                <button routerLink="/">Icon</button>
+                <button routerLink="/" class="text-white">Icon</button>
             </div>
             <div class="flex items-center lg:order-2" *ngIf="!isLoggedIn; else loggedInTemplate">
                 <button routerLink="/login" class="text-gray-800 dark:text-white hover:bg-gray-200 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 active:bg-gray-300">Login</button>
                 <button routerLink="/register" class="text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 active:bg-primary-900">Register</button>
-            </div>     
+            </div>
             <ng-template #loggedInTemplate>
                 <div class="relative inline-block">
-                    <button (click)="toggleDropdown()" class="dropdown-button flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white">
-                        {{username}}
+                    <button (click)="toggleDropdown()" class="dropdown-button flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 dark:text-white">
+                        <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                          <img class="absolute w-12 h-12 text-gray-400 left-0" [src]="profilePictureUrl"/>
+                        </div>
+
                         <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                         </svg>
                     </button>
                     <div id="dropdown" *ngIf="isDropdownOpen" class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 mt-2 dark:bg-gray-700 dark:divide-gray-600">
-                        <button (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Logout</button>
+                        <div class="px-4 py-3 text-sm text-gray-700 dark:text-white">
+                          {{username}}
+                        </div>
+                        <button (click)="logout()" class="block px-4 py-3 w-full text-left text-sm text-gray-700 hover:bg-gray-100 rounded-lg dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Logout</button>
                     </div>
                 </div>
-            </ng-template>        
+            </ng-template>
         </div>
     </nav>
 </header>
