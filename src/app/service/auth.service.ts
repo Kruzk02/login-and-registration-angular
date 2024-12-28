@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, } from '@angular/core';
-import { RegisterDTO } from '../dtos/RegisterDTO';
 import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { LoginDTO } from '../dtos/LoginDTO';
+import { RegisterDTO } from '../dtos/RegisterDTO';
+import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import { environment } from '../../environments/environment.development';
 import { Route, Router } from '@angular/router';
 
@@ -65,6 +66,24 @@ export class AuthService {
       }))
   }
 
+  update(updateUserDTO: updateUserDTO): Observable<boolean> {
+    return this.httpClient.post<{ username: string }>(`${this.apiUrl}/api/update-user`, updateUserDTO)
+    .pipe(
+      switchMap(response => {
+        if (response.username != null) {
+          return this.getUsername().pipe(
+            map(username => {
+              sessionStorage.setItem("username", username);
+              this.usernameSubject.next(username);
+              return true;
+            })
+          );
+        }
+        return of(false);
+      }),
+      catchError(() => of(false))
+    );
+  }
   verify(token: string | null): Observable<{status: string, message: string}> {
     const headers = new HttpHeaders().set("Authorization", `Bearer ${this.getJwtToken()}`);
     return this.httpClient.get<{message: string}>(`${this.apiUrl}/api/verify?token=${token}`, { headers })
