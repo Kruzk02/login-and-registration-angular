@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rx
 import { LoginDTO } from '../dtos/LoginDTO';
 import { RegisterDTO } from '../dtos/RegisterDTO';
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
+import { UserResponse } from "../dtos/UserResponse";
 import { environment } from '../../environments/environment.development';
 import { Route, Router } from '@angular/router';
 
@@ -67,23 +68,24 @@ export class AuthService {
   }
 
   update(updateUserDTO: updateUserDTO): Observable<boolean> {
-    return this.httpClient.post<{ username: string }>(`${this.apiUrl}/api/update-user`, updateUserDTO)
+    return this.httpClient.post<{ userResponse: UserResponse }>(`${this.apiUrl}/api/update-user`, updateUserDTO)
     .pipe(
-      switchMap(response => {
-        if (response.username != null) {
-          return this.getUsername().pipe(
-            map(username => {
-              sessionStorage.setItem("username", username);
-              this.usernameSubject.next(username);
-              return true;
-            })
-          );
+      map(response => {
+        const userResponse = response.userResponse;
+        if (userResponse) {
+          const { username } = userResponse;
+          if (username) {
+            sessionStorage.setItem("username", username);
+            this.usernameSubject.next(username);
+          }
+          return true;
         }
-        return of(false);
+        return false;
       }),
       catchError(() => of(false))
     );
   }
+
   verify(token: string | null): Observable<{status: string, message: string}> {
     const headers = new HttpHeaders().set("Authorization", `Bearer ${this.getJwtToken()}`);
     return this.httpClient.get<{message: string}>(`${this.apiUrl}/api/verify?token=${token}`, { headers })
@@ -112,6 +114,24 @@ export class AuthService {
       catchError(error => {
         console.error("Error fetching username:", error);
         return of("");
+      })
+    );
+  }
+
+  getFullUserDetails(): Observable<UserResponse | null> {
+    const token = this.getJwtToken();
+
+    if (!token) {
+      console.warn("Jwt token is missing");
+      return of(null);
+    }
+
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
+    return this.httpClient.get<{userResponse: UserResponse}>(`${this.apiUrl}/api/user-details`, {headers}).pipe(
+      map(response => response.userResponse),
+      catchError(error => {
+        console.error("Error fetching user details", error);
+        return of(null);
       })
     );
   }
