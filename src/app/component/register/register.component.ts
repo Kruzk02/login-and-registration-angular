@@ -16,11 +16,11 @@ import { CommonModule } from '@angular/common';
 })
 
 export class RegisterComponent implements OnInit {
-  
+
   registerDTO: RegisterDTO = { username: '', email: '', password: '' };
   registerForm!: FormGroup;
   message: string | undefined;
-  
+
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
@@ -42,6 +42,9 @@ export class RegisterComponent implements OnInit {
       next: (response) => {
         if (response) {
           this.message = 'Success register, check your email';
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 5000);
         } else {
           this.message = 'Username or email already taken'
         }
