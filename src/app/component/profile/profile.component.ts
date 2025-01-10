@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ProfilePictureComponent } from "../profile-picture/profile-picture.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, ProfilePictureComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -27,15 +28,6 @@ export class ProfileComponent implements OnInit {
     });
 
     this.authService.username.subscribe(username => this.username = username);
-    this.authService.getUserProfilePicture()?.subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(url);
-      },
-      error: (error) => {
-        console.log("Failed to fetch profile picture", error);
-      }
-    });
     this.username = sessionStorage.getItem("username");
   }
 }

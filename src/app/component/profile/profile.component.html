@@ -1,6 +1,9 @@
 <section class="relative max-w-2xl mx-auto my-3">
   <div class="flex flex-col justify-center items-center my-5">
-    <img  class="w-16 h-16 bg-cover bg-center bg-no-repeat rounded-full" [src]="profilePicture">
+    <app-profile-picture
+      [size]="'64px'"
+      [altText]="'Profile Picture'"
+    />
     <span class="my-3">{{username}}</span>
     <button class="my-5 px-5 py-2 font-semibold text-sm border border-gray-400">Edit profile</button>
   </div>

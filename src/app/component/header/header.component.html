@@ -22,7 +22,10 @@
                     <div class="flex items-center space-x-2">
                         <!-- Profile Image Button -->
                         <button routerLink="/profile" class="w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                            <img class="w-12 h-12" [src]="profilePictureUrl"/>
+                            <!--<img class="w-12 h-12" [src]="profilePictureUrl"/>-->
+                            <app-profile-picture
+                              [size]="'48px'"
+                              [altText]="'Profile Picture'"/>
                         </button>
 
                         <!-- Dropdown for logged-in user -->
