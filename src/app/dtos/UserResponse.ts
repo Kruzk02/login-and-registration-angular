@@ -1,6 +1,9 @@
 export interface UserResponse {
-  username?: string;
-  email?: string;
-  bio?: string;
-  profilePicture?: File;
+  id: bigint,
+  username: string;
+  email: string;
+  profilePicture: string;
+  password: string;
+  bio: string;
+  gender: string;
 }
