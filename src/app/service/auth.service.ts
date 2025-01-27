@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { LoginDTO } from '../dtos/LoginDTO';
 import { RegisterDTO } from '../dtos/RegisterDTO';
-import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import { UserResponse } from "../dtos/UserResponse";
 import { environment } from '../../environments/environment.development';
 import { Router } from '@angular/router';
@@ -44,17 +43,16 @@ export class AuthService {
   }
 
   update(formData: FormData): Observable<boolean> {
-    return this.httpClient.post<{ userResponse: UserResponse }>(`${this.apiUrl}/api/update-user`, formData)
+    const headers = this.getAuthHeaders();
+    return this.httpClient.put<UserResponse>(`${this.apiUrl}/api/update-user`, formData, { headers })
       .pipe(
         map(response => {
-          if (response?.userResponse?.username) {
-            this.storeUsername(response.userResponse.username);
-            return true;
-          }
-          return false;
+          console.log(response)
+          this.storeUsername(response.username);
+          return !!response;
         }),
         catchError(error => {
-          console.error("Error in update:", error);
+          console.error("Error in update:", error.message || error);
           return of(false);
         })
       );
