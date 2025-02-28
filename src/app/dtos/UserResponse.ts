@@ -2,8 +2,7 @@ export interface UserResponse {
   id: bigint,
   username: string;
   email: string;
-  profilePicture: string;
-  password: string;
+  mediaId: number;
   bio: string;
   gender: string;
 }
