@@ -2,9 +2,8 @@
   <div class="flex flex-col justify-center items-center my-5">
     <app-profile-picture
       [size]="'64px'"
-      [altText]="'Profile Picture'"
-    />
+      [altText]="'Profile Picture'"/>
     <span class="my-3">{{username}}</span>
-    <button class="my-5 px-5 py-2 font-semibold text-sm border border-gray-400">Edit profile</button>
+    <button routerLink="/edit" class="my-5 px-5 py-2 font-semibold text-sm border border-gray-400">Edit profile</button>
   </div>
 </section>
