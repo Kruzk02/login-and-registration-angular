@@ -23,13 +23,24 @@ export class ProfilePictureComponent implements OnInit{
   }
 
   fetchProfilePicture(): void {
-    this.authService.getUserProfilePicture().subscribe({
-      next: (blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        this.profileImageUrl = this.domSantizer.bypassSecurityTrustUrl(objectUrl);
+    this.authService.getFullUserDetails().subscribe({
+      next: (user) => {
+        this.authService.getUserProfilePicture(user?.mediaId).subscribe({
+          next: (blob) => {
+            const objectUrl = URL.createObjectURL(blob);
+            if (this.profileImageUrl) {
+              URL.revokeObjectURL(this.profileImageUrl as string);
+            }
+            
+            this.profileImageUrl = this.domSantizer.bypassSecurityTrustUrl(objectUrl);
+          },
+          error: (err) => {
+            console.error("Error fetching profile picture:", err);
+          }
+        });
       },
       error: (err) => {
-        console.error(err?.message);
+        console.error("Error fetching user details:", err);
       }
     })
   }
