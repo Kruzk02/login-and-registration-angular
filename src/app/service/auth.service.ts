@@ -21,7 +21,7 @@ export class AuthService {
   constructor(private httpClient: HttpClient, private router: Router) {}
 
   register(registerDTO: RegisterDTO): Observable<boolean> {
-    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/register`, registerDTO)
+    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/register`, registerDTO)
       .pipe(
         map(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   login(loginDTO: LoginDTO): Observable<boolean> {
-    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/login`, loginDTO)
+    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/login`, loginDTO)
       .pipe(
         map(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -44,7 +44,7 @@ export class AuthService {
 
   update(formData: FormData): Observable<boolean> {
     const headers = this.getAuthHeaders();
-    return this.httpClient.put<UserResponse>(`${this.apiUrl}/api/update-user`, formData, { headers })
+    return this.httpClient.put<UserResponse>(`${this.apiUrl}/api/users/update-user`, formData, { headers })
       .pipe(
         map(response => {
           console.log(response)
@@ -60,7 +60,7 @@ export class AuthService {
 
   verify(token: string | null): Observable<{ status: string; message: string }> {
     const headers = this.getAuthHeaders();
-    return this.httpClient.get<{ message: string }>(`${this.apiUrl}/api/verify?token=${token}`, { headers })
+    return this.httpClient.get<{ message: string }>(`${this.apiUrl}/api/users/verify?token=${token}`, { headers })
       .pipe(
         map(response => ({ status: 'success', message: response.message })),
         catchError(error => {
@@ -71,7 +71,7 @@ export class AuthService {
   }
 
   getUsername(): Observable<string> {
-    return this.httpClient.get<{ username: string }>(`${this.apiUrl}/api/get-username`, { headers: this.getAuthHeaders() })
+    return this.httpClient.get<{ username: string }>(`${this.apiUrl}/api/users/get-username`, { headers: this.getAuthHeaders() })
       .pipe(
         map(response => response.username),
         catchError(error => {
@@ -82,9 +82,11 @@ export class AuthService {
   }
 
   getFullUserDetails(): Observable<UserResponse | null> {
-    return this.httpClient.get<{ userResponse: UserResponse }>(`${this.apiUrl}/api/user-details`, { headers: this.getAuthHeaders() })
+    return this.httpClient.get<UserResponse>(`${this.apiUrl}/api/users/user-details`, { headers: this.getAuthHeaders() })
       .pipe(
-        map(response => response.userResponse),
+        map(response => {
+          return response
+        }),
         catchError(error => {
           console.error("Error fetching user details:", error);
           return of(null);
@@ -92,8 +94,8 @@ export class AuthService {
       );
   }
 
-  getUserProfilePicture(): Observable<Blob> {
-    return this.httpClient.get(`${this.apiUrl}/api/profile-picture`, {
+  getUserProfilePicture(mediaId: number | undefined): Observable<Blob> {
+    return this.httpClient.get(`${this.apiUrl}/api/media/${mediaId}`, {
       headers: this.getAuthHeaders(),
       responseType: 'blob',
     });
@@ -108,7 +110,7 @@ export class AuthService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.getJwtToken();
-    return new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
   private getJwtToken(): string | null {
