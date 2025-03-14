@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { LoginDTO } from '../dtos/LoginDTO';
 import { RegisterDTO } from '../dtos/RegisterDTO';
 import { UserResponse } from "../dtos/UserResponse";
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   login(loginDTO: LoginDTO): Observable<boolean> {
-    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/login`, loginDTO)
+    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/login`, loginDTO, { withCredentials: true })
       .pipe(
         map(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -44,7 +44,7 @@ export class AuthService {
 
   update(formData: FormData): Observable<boolean> {
     const headers = this.getAuthHeaders();
-    return this.httpClient.put<UserResponse>(`${this.apiUrl}/api/users/update-user`, formData, { headers })
+    return this.httpClient.put<UserResponse>(`${this.apiUrl}/api/users/update-user`, formData, { headers, withCredentials: true })
       .pipe(
         map(response => {
           console.log(response)
@@ -99,6 +99,17 @@ export class AuthService {
       headers: this.getAuthHeaders(),
       responseType: 'blob',
     });
+  }
+
+  refreshToken(): Observable<string> {
+    return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/refresh`, { headers: this.getAuthHeaders() }, { withCredentials: true })
+    .pipe(
+      map(response => response.token),
+      catchError(error => {
+        console.error("Error refreshing token:", error);
+        return throwError(() => new Error('Token refresh failed'));
+      })
+    );
   }
 
   logout(): void {
