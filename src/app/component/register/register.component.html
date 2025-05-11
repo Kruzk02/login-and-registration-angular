@@ -8,45 +8,45 @@
                 <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-4 md:space-y-6">
                     <div>
                         <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><b>Username</b></label>
-                        <input type="text" formControlName="username" name="username" id="username" 
-                        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name" 
+                        <input type="text" formControlName="username" name="username" id="username"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name"
                         required>
                         <span *ngIf="!registerForm.get('username')?.valid && registerForm.get('username')?.touched" class="text-primary-600">
                             Please provide a valid username
-                        </span>   
+                        </span>
                     </div>
                     <div>
-                        <label for="email"><b>Email: </b></label>
-                        <input type="text" formControlName="email" name="email" id="email" 
-                        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name" 
-                        
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><b>Email: </b></label>
+                        <input type="text" formControlName="email" name="email" id="email"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name"
+
                         required>
                         <span *ngIf="!registerForm.get('email')?.valid && registerForm.get('email')?.touched" class="text-primary-600">
                             Please provide a valid email
-                        </span>  
+                        </span>
                     </div>
                     <div>
-                        <label for="psw"><b>Password: </b></label>
+                        <label for="psw" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><b>Password: </b></label>
                         <input type="password" formControlName="password" name="psw" id="psw" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                         <span *ngIf="!registerForm.get('password')?.valid && registerForm.get('password')?.touched" class="text-primary-600">
                             Please provide a valid password
-                        </span>  
+                        </span>
                         <div class="text-center">
-                            <span 
+                            <span
                             *ngIf="message == 'Success register, check your email'; else errorTemplate"
                             [ngStyle]="{ color: 'green'}"class="text-center"
                             >{{message}}</span>
                             <ng-template #errorTemplate>
                                 <span [ngStyle]="{ color: 'red' }">{{message}}</span>
-                            </ng-template>  
-                        </div>  
+                            </ng-template>
+                        </div>
                     </div>
                     <button type="submit" [disabled]="!registerForm.valid" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Register</button>
                     <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                         Have an account? <button type="submit" routerLink="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login</button>
                     </p>
-                </form>   
-            </div>     
+                </form>
+            </div>
         </div>
     </div>
 </section>
