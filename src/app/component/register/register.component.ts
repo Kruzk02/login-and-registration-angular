@@ -3,7 +3,6 @@ import { AuthService } from '../../service/auth.service';
 import { RegisterDTO } from '../../dtos/RegisterDTO';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  imports: [HttpClientModule, ReactiveFormsModule,RouterLink,CommonModule],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   providers: [AuthService]
 })
 
@@ -21,7 +20,7 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   message: string | undefined;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = new FormGroup({
