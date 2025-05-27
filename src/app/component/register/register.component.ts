@@ -6,12 +6,11 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
-  providers: [AuthService]
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.css'],
+    imports: [ReactiveFormsModule, RouterLink, CommonModule],
+    providers: [AuthService]
 })
 
 export class RegisterComponent implements OnInit {

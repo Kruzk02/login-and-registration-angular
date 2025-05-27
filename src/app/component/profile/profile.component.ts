@@ -6,11 +6,10 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ProfilePictureComponent } from "../profile-picture/profile-picture.component";
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [RouterLink, CommonModule, ProfilePictureComponent],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+    selector: 'app-profile',
+    imports: [RouterLink, CommonModule, ProfilePictureComponent],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
   username: string | null = null;

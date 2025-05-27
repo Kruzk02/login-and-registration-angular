@@ -3,11 +3,10 @@ import { AuthService } from "../../service/auth.service";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-profile-picture',
-  standalone: true,
-  imports: [],
-  templateUrl: './profile-picture.component.html',
-  styleUrl: './profile-picture.component.css'
+    selector: 'app-profile-picture',
+    imports: [],
+    templateUrl: './profile-picture.component.html',
+    styleUrl: './profile-picture.component.css'
 })
 export class ProfilePictureComponent implements OnInit{
 

@@ -5,14 +5,13 @@ import {NgIf} from "@angular/common";
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-update-user',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgIf
-  ],
-  templateUrl: './update-user.component.html',
-  styleUrl: './update-user.component.css'
+    selector: 'app-update-user',
+    imports: [
+        ReactiveFormsModule,
+        NgIf
+    ],
+    templateUrl: './update-user.component.html',
+    styleUrl: './update-user.component.css'
 })
 export class UpdateUserComponent {
   updateForm: FormGroup;

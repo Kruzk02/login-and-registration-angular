@@ -6,11 +6,10 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ProfilePictureComponent } from "../profile-picture/profile-picture.component";
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [RouterLink, CommonModule, ProfilePictureComponent],
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    imports: [RouterLink, CommonModule, ProfilePictureComponent],
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css']
 })
 
 export class HeaderComponent implements OnInit {
