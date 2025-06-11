@@ -5,12 +5,12 @@ import { AuthGuard } from './guards/auth.guard';
 import { TokenGuard } from './guards/token.guard';
 import { VerifyComponent } from './component/verify/verify.component';
 import { ProfileComponent } from "./component/profile/profile.component";
-import {UpdateUserComponent} from "./component/update-user/update-user.component";
+import { UpdateUserComponent } from "./component/update-user/update-user.component";
 
 export const routes: Routes = [
-    {path: 'login', canActivate: [AuthGuard], component: LoginComponent},
-    {path: 'register', canActivate: [AuthGuard], component: RegisterComponent},
-    {path: 'verify',canActivate: [TokenGuard], component: VerifyComponent},
-    {path: 'profile', component: ProfileComponent},
-    {path: 'edit', component: UpdateUserComponent},
+  { path: 'login', canActivate: [AuthGuard], component: LoginComponent },
+  { path: 'register', canActivate: [AuthGuard], component: RegisterComponent },
+  { path: 'verify', canActivate: [TokenGuard], component: VerifyComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'edit', component: UpdateUserComponent },
 ];
