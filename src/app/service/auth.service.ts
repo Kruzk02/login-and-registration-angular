@@ -18,7 +18,7 @@ export class AuthService {
   private usernameSubject = new BehaviorSubject<string | null>(this.getStoredUsername());
   public username = this.usernameSubject.asObservable();
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  constructor(private httpClient: HttpClient, private router: Router) { }
 
   register(registerDTO: RegisterDTO): Observable<boolean> {
     return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/register`, registerDTO)
@@ -84,9 +84,7 @@ export class AuthService {
   getFullUserDetails(): Observable<UserResponse | null> {
     return this.httpClient.get<UserResponse>(`${this.apiUrl}/api/users/user-details`, { headers: this.getAuthHeaders() })
       .pipe(
-        map(response => {
-          return response
-        }),
+        map(response => response),
         catchError(error => {
           console.error("Error fetching user details:", error);
           return of(null);
@@ -103,13 +101,13 @@ export class AuthService {
 
   refreshToken(): Observable<string> {
     return this.httpClient.post<{ token: string }>(`${this.apiUrl}/api/users/refresh`, { headers: this.getAuthHeaders() }, { withCredentials: true })
-    .pipe(
-      map(response => response.token),
-      catchError(error => {
-        console.error("Error refreshing token:", error);
-        return throwError(() => new Error('Token refresh failed'));
-      })
-    );
+      .pipe(
+        map(response => response.token),
+        catchError(error => {
+          console.error("Error refreshing token:", error);
+          return throwError(() => new Error('Token refresh failed'));
+        })
+      );
   }
 
   logout(): void {

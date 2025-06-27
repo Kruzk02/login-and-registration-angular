@@ -1,19 +1,19 @@
-import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AuthService } from "../../service/auth.service";
-import {NgIf} from "@angular/common";
+import { NgIf } from "@angular/common";
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-update-user',
-    imports: [
-        ReactiveFormsModule,
-        NgIf
-    ],
-    templateUrl: './update-user.component.html',
-    styleUrl: './update-user.component.css'
+  selector: 'app-update-user',
+  imports: [
+    ReactiveFormsModule,
+    NgIf
+  ],
+  templateUrl: './update-user.component.html',
+  styleUrl: './update-user.component.css'
 })
-export class UpdateUserComponent {
+export class UpdateUserComponent implements OnInit {
   updateForm: FormGroup;
   message: string | undefined;
 
@@ -23,7 +23,21 @@ export class UpdateUserComponent {
       email: ['', Validators.email],
       password: ['', Validators.minLength(3)],
       bio: [''],
-      profilePicture: ['']
+      profilePicture: [''],
+      gender: [''],
+    })
+  }
+
+  ngOnInit(): void {
+    this.authService.getFullUserDetails().subscribe((user) => {
+      if (user) {
+        this.updateForm.patchValue({
+          username: user.username,
+          email: user.email,
+          bio: user.bio,
+          gender: user.gender,
+        })
+      }
     })
   }
 
@@ -45,13 +59,11 @@ export class UpdateUserComponent {
 
     this.authService.update(formData).subscribe({
       next: (success) => {
+        this.message = success
+          ? 'User information updated successfully!'
+          : 'Failed to update user information.';
         if (success) {
-          this.message = 'User information updated successfully!';
-          setTimeout(() => {
-            this.router.navigate(['/'])
-          },5000)
-        } else {
-          this.message = 'Failed to update user information.';
+          setTimeout(() => this.router.navigate(['/']), 5000);
         }
       },
       error: () => {
