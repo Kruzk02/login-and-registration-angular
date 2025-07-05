@@ -15,7 +15,7 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const notHeaderRoutes = ['/login', '/register'];
+        const notHeaderRoutes = ['/login', '/register', '/edit'];
         this.showHeader = !notHeaderRoutes.includes(event.urlAfterRedirects);
       }
     });

@@ -3,12 +3,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { AuthService } from "../../service/auth.service";
 import { NgIf } from "@angular/common";
 import { Router } from '@angular/router';
+import { ProfilePictureComponent } from '../profile-picture/profile-picture.component';
 
 @Component({
   selector: 'app-update-user',
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    ProfilePictureComponent
   ],
   templateUrl: './update-user.component.html',
   styleUrl: './update-user.component.css'
@@ -16,6 +18,10 @@ import { Router } from '@angular/router';
 export class UpdateUserComponent implements OnInit {
   updateForm: FormGroup;
   message: string | undefined;
+  previewImageUrl: string | undefined;
+  private previewUrlObject: string | null = null;
+
+  private selectedFile: File | null = null;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.updateForm = this.fb.group({
@@ -23,22 +29,44 @@ export class UpdateUserComponent implements OnInit {
       email: ['', Validators.email],
       password: ['', Validators.minLength(3)],
       bio: [''],
-      profilePicture: [''],
-      gender: [''],
-    })
+      gender: ['']
+    });
   }
 
   ngOnInit(): void {
     this.authService.getFullUserDetails().subscribe((user) => {
-      if (user) {
-        this.updateForm.patchValue({
-          username: user.username,
-          email: user.email,
-          bio: user.bio,
-          gender: user.gender,
+      if (user && user.mediaId) {
+        this.authService.getUserProfilePicture(user.mediaId).subscribe(blob => {
+          if (this.previewUrlObject) {
+            URL.revokeObjectURL(this.previewUrlObject);
+          }
+          this.previewUrlObject = URL.createObjectURL(blob);
+          this.previewImageUrl = this.previewUrlObject;
         })
       }
     })
+  }
+
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('profilePicture') as HTMLInputElement;
+    fileInput.click();
+  }
+
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (this.previewUrlObject) {
+          URL.revokeObjectURL(this.previewUrlObject);
+          this.previewUrlObject = null;
+        }
+        this.previewImageUrl = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   onSubmit(): void {
@@ -51,10 +79,10 @@ export class UpdateUserComponent implements OnInit {
     formData.append('email', this.updateForm.get('email')?.value);
     formData.append('password', this.updateForm.get('password')?.value);
     formData.append('bio', this.updateForm.get('bio')?.value);
+    formData.append('gender', this.updateForm.get('gender')?.value);
 
-    const profilePictureInput = document.getElementById('profilePicture') as HTMLInputElement;
-    if (profilePictureInput.files && profilePictureInput.files.length > 0) {
-      formData.append('profilePicture', profilePictureInput.files[0]);
+    if (this.selectedFile) {
+      formData.append('profilePicture', this.selectedFile);
     }
 
     this.authService.update(formData).subscribe({
@@ -63,7 +91,7 @@ export class UpdateUserComponent implements OnInit {
           ? 'User information updated successfully!'
           : 'Failed to update user information.';
         if (success) {
-          setTimeout(() => this.router.navigate(['/']), 5000);
+          setTimeout(() => this.router.navigate(['/']), 3000);
         }
       },
       error: () => {
@@ -71,5 +99,4 @@ export class UpdateUserComponent implements OnInit {
       },
     });
   }
-
 }
