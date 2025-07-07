@@ -9,8 +9,7 @@ import { ProfilePictureComponent } from '../profile-picture/profile-picture.comp
   selector: 'app-update-user',
   imports: [
     ReactiveFormsModule,
-    NgIf,
-    ProfilePictureComponent
+    NgIf
   ],
   templateUrl: './update-user.component.html',
   styleUrl: './update-user.component.css'
@@ -27,7 +26,6 @@ export class UpdateUserComponent implements OnInit {
     this.updateForm = this.fb.group({
       username: ['', Validators.minLength(3)],
       email: ['', Validators.email],
-      password: ['', Validators.minLength(3)],
       bio: [''],
       gender: ['']
     });
@@ -36,6 +34,12 @@ export class UpdateUserComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getFullUserDetails().subscribe((user) => {
       if (user && user.mediaId) {
+        this.updateForm.patchValue({
+          username: user.username,
+          email: user.email,
+          bio: user.bio,
+          gender: user.gender
+        });
         this.authService.getUserProfilePicture(user.mediaId).subscribe(blob => {
           if (this.previewUrlObject) {
             URL.revokeObjectURL(this.previewUrlObject);
@@ -75,11 +79,10 @@ export class UpdateUserComponent implements OnInit {
     }
 
     const formData = new FormData();
-    formData.append('username', this.updateForm.get('username')?.value);
-    formData.append('email', this.updateForm.get('email')?.value);
-    formData.append('password', this.updateForm.get('password')?.value);
-    formData.append('bio', this.updateForm.get('bio')?.value);
-    formData.append('gender', this.updateForm.get('gender')?.value);
+    formData.append('username', this.updateForm.get('username')!.value);
+    formData.append('email', this.updateForm.get('email')!.value);
+    formData.append('bio', this.updateForm.get('bio')!.value);
+    formData.append('gender', this.updateForm.get('gender')!.value);
 
     if (this.selectedFile) {
       formData.append('profilePicture', this.selectedFile);
