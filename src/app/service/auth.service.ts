@@ -6,6 +6,7 @@ import { RegisterDTO } from '../dtos/RegisterDTO';
 import { UserResponse } from "../dtos/UserResponse";
 import { environment } from '../../environments/environment.development';
 import { Router } from '@angular/router';
+import { VerificationTokenDTO } from '../dtos/VerificationTokenDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -58,14 +59,14 @@ export class AuthService {
       );
   }
 
-  verify(token: string | null): Observable<{ status: string; message: string }> {
+  verify(verificationTokenDTO: VerificationTokenDTO): Observable<{ message: string }> {
     const headers = this.getAuthHeaders();
-    return this.httpClient.get<{ message: string }>(`${this.apiUrl}/api/users/verify?token=${token}`, { headers })
+    return this.httpClient.post<{ message: string }>(`${this.apiUrl}/api/users/verify`, verificationTokenDTO, { headers })
       .pipe(
-        map(response => ({ status: 'success', message: response.message })),
+        map(response => response),
         catchError(error => {
           console.error("Error in verify:", error);
-          return of({ status: 'error', message: 'Verification failed.' });
+          return of({ message: 'Verification failed.' });
         })
       );
   }

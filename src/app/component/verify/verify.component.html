@@ -1,0 +1,28 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white p-6 rounded-xl shadow-md w-96 text-center">
+    <h2 class="text-2xl font-bold mb-4">Enter Verification Code</h2>
+
+    <div class="flex justify-center gap-2 mb-6">
+      <input *ngFor="let box of otpBoxes; let i = index"
+             type="text"
+             maxlength="1"
+             [(ngModel)]="token[i]"
+             (input)="onInput($event)"
+             (paste)="onPaste($event)"
+             class="w-12 h-14 text-center text-2xl font-semibold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <button (click)="verifyCode()"
+            class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+      Verify
+    </button>
+    <span
+      *ngIf="message == 'Account verified successfully.'; else errorTemplate"
+       [ngStyle]="{ color: 'green'}"class="text-center"
+       >{{message}}</span>
+     <ng-template #errorTemplate>
+      <span [ngStyle]="{ color: 'red' }">{{message}}</span>
+     </ng-template>
+  </div>
+</div>
+
