@@ -57,4 +57,14 @@ export class VerifyComponent {
     }
   }
 
+  reVerify(): void {
+    this.authService.reVerify().subscribe({
+      next: (response) => {
+        this.message = response.message;
+      },
+      error: (err) => {
+        this.message = err.message;
+      }
+    });
+  }
 }
