@@ -71,6 +71,18 @@ export class AuthService {
       );
   }
 
+  reVerify(): Observable<{ message: string }> {
+    const headers = this.getAuthHeaders();
+    return this.httpClient.get<{ message: string }>(`${this.apiUrl}/api/users/re-verify`, { headers })
+      .pipe(
+        map(reponse => reponse),
+        catchError(error => {
+          console.error("Error in re-verify: ", error);
+          return of({ message: 're-verification failed' });
+        })
+      );
+  }
+
   getUsername(): Observable<string> {
     return this.httpClient.get<{ username: string }>(`${this.apiUrl}/api/users/get-username`, { headers: this.getAuthHeaders() })
       .pipe(
