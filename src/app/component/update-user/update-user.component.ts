@@ -58,18 +58,33 @@ export class UpdateUserComponent implements OnInit {
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files && input.files[0]) {
-      this.selectedFile = input.files[0];
+      const file = input.files[0];
 
       const reader = new FileReader();
-      reader.onload = () => {
-        if (this.previewUrlObject) {
-          URL.revokeObjectURL(this.previewUrlObject);
-          this.previewUrlObject = null;
-        }
-        this.previewImageUrl = reader.result as string;
+      reader.onload = (e: any) => {
+        const image = new Image();
+        image.onload = () => {
+          const maxWidth = 280;
+          const maxHeight = 280;
+
+          if (image.width > maxWidth || image.height > maxHeight) {
+            alert(`Please upload an image smaller than ${maxWidth}x${maxHeight}px.`);
+            this.selectedFile = null;
+            return;
+          }
+
+          this.selectedFile = file;
+          if (this.previewUrlObject) {
+            URL.revokeObjectURL(this.previewUrlObject);
+            this.previewUrlObject = null;
+          }
+          this.previewImageUrl = reader.result as string;
+        };
+        image.src = e.target.result;
       };
-      reader.readAsDataURL(this.selectedFile);
+      reader.readAsDataURL(file);
     }
   }
 
